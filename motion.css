@@ -1,0 +1,154 @@
+/* PeaceCare motion: global hover effects and transitions.
+   Change the numbers in :root to make everything bolder or calmer. */
+   body { outline: 6px solid red !important; }
+:root {
+  --pc-gold: 212, 167, 44;
+  --pc-green: 36, 56, 53;
+  --pc-lift: -4px; /* how far cards rise on hover */
+  --pc-btn-lift: -2px; /* how far buttons rise on hover */
+  --pc-ease: cubic-bezier(0.22, 0.8, 0.3, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: rgba(var(--pc-gold), 0.35);
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes pc-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes pc-pop {
+  from { opacity: 0; transform: scale(0.92) translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes pc-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes pc-row-in {
+  from { opacity: 0; transform: translateX(-14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes pc-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+/* Reusable classes for new components */
+.pc-rise { opacity: 0; animation: pc-rise 0.6s var(--pc-ease) forwards; }
+.pc-float { animation: pc-float 9s ease-in-out infinite; }
+
+/* ---------- Page enter: every block on a page rises in, one after another ---------- */
+div.min-h-screen.transition-all > * {
+  animation: pc-rise 0.6s var(--pc-ease) backwards;
+}
+div.min-h-screen.transition-all > *:nth-child(2) { animation-delay: 0.06s; }
+div.min-h-screen.transition-all > *:nth-child(3) { animation-delay: 0.12s; }
+div.min-h-screen.transition-all > *:nth-child(4) { animation-delay: 0.18s; }
+div.min-h-screen.transition-all > *:nth-child(5) { animation-delay: 0.24s; }
+div.min-h-screen.transition-all > *:nth-child(6) { animation-delay: 0.3s; }
+div.min-h-screen.transition-all > *:nth-child(7) { animation-delay: 0.36s; }
+div.min-h-screen.transition-all > *:nth-child(n + 8) { animation-delay: 0.42s; }
+
+/* ---------- Smooth transitions on everything interactive ---------- */
+button,
+a,
+input,
+select,
+textarea,
+tbody tr,
+[class~="shadow-sm"],
+[class~="shadow-lg"] {
+  transition-property: all !important;
+  transition-duration: 0.25s !important;
+  transition-timing-function: var(--pc-ease) !important;
+}
+
+/* ---------- Buttons: rise and brighten on hover, press down on click ---------- */
+button:not(:disabled):hover {
+  translate: 0 var(--pc-btn-lift);
+  filter: brightness(1.08);
+}
+button:not(:disabled):active {
+  translate: 0 0;
+  scale: 0.97;
+}
+
+/* ---------- Sidebar links slide to the right ---------- */
+aside a:not(.rounded-l-full):hover {
+  translate: 6px 0;
+}
+
+/* ---------- Cards rise, glow and get a gold border on hover ---------- */
+div.min-h-screen.transition-all
+  [class~="shadow-sm"]:not(input):not(select):not(textarea):not(button):not(form):not(:has(table)):not(:has(form)):hover {
+  translate: 0 var(--pc-lift);
+  box-shadow: 0 20px 40px -16px rgba(var(--pc-green), 0.4);
+  border-color: rgba(var(--pc-gold), 0.7) !important;
+}
+
+/* Big colored tiles and icon badges lift a little more */
+div.min-h-screen.transition-all
+  [class~="shadow-lg"]:not(input):not(select):not(textarea):not(button):not(form):hover {
+  translate: 0 calc(var(--pc-lift) - 2px);
+  filter: brightness(1.06);
+}
+
+/* ---------- Inputs light up gold on hover and focus ---------- */
+input:not([type="checkbox"]):not([type="radio"]):hover,
+select:hover,
+textarea:hover {
+  border-color: rgba(var(--pc-gold), 0.85) !important;
+  box-shadow: 0 8px 18px -10px rgba(var(--pc-green), 0.35);
+}
+input:not([type="checkbox"]):not([type="radio"]):focus,
+select:focus,
+textarea:focus {
+  border-color: rgb(var(--pc-gold)) !important;
+  box-shadow: 0 0 0 4px rgba(var(--pc-gold), 0.25) !important;
+}
+
+/* ---------- Table rows: slide in on load, gold highlight on hover ---------- */
+tbody > tr {
+  animation: pc-row-in 0.45s var(--pc-ease) backwards;
+}
+tbody > tr:nth-child(2) { animation-delay: 0.04s; }
+tbody > tr:nth-child(3) { animation-delay: 0.08s; }
+tbody > tr:nth-child(4) { animation-delay: 0.12s; }
+tbody > tr:nth-child(5) { animation-delay: 0.16s; }
+tbody > tr:nth-child(6) { animation-delay: 0.2s; }
+tbody > tr:nth-child(7) { animation-delay: 0.24s; }
+tbody > tr:nth-child(8) { animation-delay: 0.28s; }
+tbody > tr:nth-child(n + 9) { animation-delay: 0.32s; }
+
+tbody > tr:hover {
+  background-color: rgba(var(--pc-gold), 0.13) !important;
+}
+tbody > tr:hover > td:first-child {
+  box-shadow: inset 4px 0 0 rgb(var(--pc-gold));
+}
+
+/* ---------- Pop-up windows: the dimmed backdrop fades, the window pops in ---------- */
+div.fixed.inset-0[class*="z-[2000]"] {
+  animation: pc-fade 0.25s ease-out backwards;
+}
+div.fixed.inset-0[class*="z-[2000]"] > div {
+  animation: pc-pop 0.38s var(--pc-ease) backwards;
+}
+
+/* ---------- Respect people who turn off motion in their system settings ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
